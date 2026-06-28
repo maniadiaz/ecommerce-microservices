@@ -14,6 +14,7 @@ public class Order {
     @GeneratedValue
     private UUID id;
     private UUID productId;
+    private UUID userId;
     private int quantity;
     private String status;
     @CreationTimestamp

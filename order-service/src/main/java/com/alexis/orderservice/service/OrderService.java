@@ -11,11 +11,15 @@ import java.util.UUID;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final RestClient productClient;
+    private final RestClient userClient;
 
     public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
         this.productClient = RestClient.builder()
                 .baseUrl("http://localhost:8081")
+                .build();
+        this.userClient = RestClient.builder()
+                .baseUrl("http://localhost:8083")
                 .build();
     }
 
@@ -32,6 +36,12 @@ public class OrderService {
         productClient
                 .get()
                 .uri("/api/products/{id}", order.getProductId())
+                .retrieve()
+                .toBodilessEntity();
+
+        userClient
+                .get()
+                .uri("/api/users/{id}", order.getUserId())
                 .retrieve()
                 .toBodilessEntity();
         return orderRepository.save(order);
