@@ -2,6 +2,8 @@ package com.alexis.orderservice.service;
 
 import com.alexis.orderservice.model.Order;
 import com.alexis.orderservice.repository.OrderRepository;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import java.util.List;
@@ -13,13 +15,14 @@ public class OrderService {
     private final RestClient productClient;
     private final RestClient userClient;
 
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository,
+            @Qualifier("loadBalancedRestClientBuilder") RestClient.Builder restClientBuilder) {
         this.orderRepository = orderRepository;
-        this.productClient = RestClient.builder()
-                .baseUrl("http://localhost:8081")
+        this.productClient = restClientBuilder
+                .baseUrl("http://PRODUCT-SERVICE")
                 .build();
-        this.userClient = RestClient.builder()
-                .baseUrl("http://localhost:8083")
+        this.userClient = restClientBuilder
+                .baseUrl("http://USER-SERVICE")
                 .build();
     }
 
